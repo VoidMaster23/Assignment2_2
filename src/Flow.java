@@ -1,16 +1,17 @@
 import javax.swing.*;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Flow {
 	static long startTime = 0;
 	static int frameX;
 	static int frameY;
 	static FlowPanel fp;
-
+	static JPanel g;
 	// start timer
 	private static void tick(){
 		startTime = System.currentTimeMillis();
@@ -28,13 +29,15 @@ public class Flow {
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	frame.getContentPane().setLayout(new BorderLayout());
     	
-      	JPanel g = new JPanel();
+    	g = new JPanel();
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
    
 		fp = new FlowPanel(landdata);
 		fp.setPreferredSize(new Dimension(frameX,frameY));
 		g.add(fp);
-	    
+		Graphics2D g2 = landdata.img.createGraphics();
+
+
 		// to do: add a MouseListener, buttons and ActionListeners on those buttons
 	   	
 		JPanel b = new JPanel();

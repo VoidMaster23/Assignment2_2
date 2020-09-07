@@ -85,6 +85,11 @@ public class GridItem {
     }
 
 
+    public String toString(){
+        return "Row Index: "+Integer.toString(rowInd) + "\n Column Index: "+Integer.toString(colInd)+
+                "\n Height: "+Float.toString(height)+ "\n Water Units: "+Integer.toString(waterUnits)+
+                "\n Water Surface: "+ Float.toString(getWaterSurface());
+    }
 
 
 }
