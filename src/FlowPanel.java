@@ -6,7 +6,6 @@ import javax.swing.JPanel;
 public class FlowPanel extends JPanel implements Runnable {
 	Terrain land;
 	Graphics graphics;
-	
 	FlowPanel(Terrain terrain) {
 
 		land=terrain;
@@ -43,6 +42,8 @@ public class FlowPanel extends JPanel implements Runnable {
 		if (land.getImage() != null){
 			g.drawImage(land.getImage(), 0, 0, null);
 			graphics = getGraphics();
+			System.out.println("SET GRAPHICS");
+			System.out.println(graphics.toString());
 			//graphics.setColor(Color.CYAN);
 
 //			//draw the grid

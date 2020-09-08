@@ -84,6 +84,13 @@ public class GridItem {
         return this.height + this.waterUnits * (0.01f);
     }
 
+    /**
+     * Sets the waterUnits back to 0
+     */
+    synchronized void resetWater(){
+        this.waterUnits = 0;
+    }
+
 
     public String toString(){
         return "Row Index: "+Integer.toString(rowInd) + "\n Column Index: "+Integer.toString(colInd)+
