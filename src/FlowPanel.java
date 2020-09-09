@@ -14,7 +14,7 @@ public class FlowPanel extends JPanel implements Runnable {
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 
-
+				System.out.println(e);
 				graphics.drawRect(e.getX(),e.getY(),getWidth()/100,getHeight()/100);
 				graphics.setColor(Color.BLUE);
 				System.out.println(graphics.toString());

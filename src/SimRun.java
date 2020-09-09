@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -49,23 +50,38 @@ public class SimRun extends java.lang.Thread {
                 //note that we have  to address y as the row and x and column
                 GridItem currentItem = landData.items[x][y];
 
-                if(currentItem.getWaterUnits() != 0){
-                    //find the lowestNeighbor
-                    GridItem lowestNeighbor = findLowest(x,y,currentItem);
+                if(currentItem.getWaterUnits() != 0) {
+                    System.out.println(x);
+                    System.out.println(y);
+                    //System.out.println(currentItem);
 
+                    //find the lowestNeighbor
+                    GridItem lowestNeighbor = findLowest(x, y, currentItem);
+                    //System.out.println(lowestNeighbor);
+                    //System.exit(0);
                     //transfer units from the current item to the lowest neighbor\
                     // note this operation needs to be thread safe hence the synchronized block
-                    synchronized (currentItem){
-                        synchronized (lowestNeighbor){
-                            //take a water unit from this one and add i
-                            System.out.println(currentItem.toString());
-                            currentItem.removeWater(1);
-                            lowestNeighbor.addWater(1);
-                            System.out.println(currentItem.toString());
-                        }
-                    }// end sync block
-                }
+                    // note we only do this if there wa a lowest neighbor
+                    if (lowestNeighbor != null) {
+                        synchronized (currentItem) {
+                            synchronized (lowestNeighbor) {
+                                //take a water unit from this one and add i
+                                //System.out.println(currentItem.toString());
+                                currentItem.removeWater(1);
+                                lowestNeighbor.addWater(1);
+                             //   landData.img.setRGB(currentItem.getColInd(),currentItem.getRowInd(), Color.BLUE.getRGB());
+                                landData.img.setRGB(lowestNeighbor.getColInd(),lowestNeighbor.getRowInd(), Color.BLUE.getRGB());
 
+                                //System.exit(0);
+                                if (currentItem.getWaterUnits() == 0) {
+                                    landData.resetPixel(currentItem.getColInd(), currentItem.getRowInd());
+                                }
+                                Flow.fp.repaint();
+                                System.out.println(currentItem.toString());
+                            }
+                        }// end sync block
+                    }
+                }
 
             }
         }

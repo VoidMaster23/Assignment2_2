@@ -11,7 +11,7 @@ public class Terrain {
 	GridItem [][] items; // stores the grid items
 	int dimx, dimy; // data dimensions
 	BufferedImage img; // greyscale image for displaying the terrain top-down
-
+	float maxh, minh;
 	ArrayList<Integer> permute;	// permuted list of integers in range [0, dimx*dimy)
 	
 	// overall number of elements in the height grid
@@ -44,8 +44,9 @@ public class Terrain {
 	// convert height values to greyscale colour and populate an image
 	void deriveImage()
 	{
-		img = new BufferedImage(dimy, dimx, BufferedImage.TYPE_INT_ARGB);
-		float maxh = -10000.0f, minh = 10000.0f;
+		img = new BufferedImage(dimx,dimy, BufferedImage.TYPE_INT_ARGB);
+		maxh = -10000.0f;
+		minh = 10000.0f;
 		
 		// determine range of heights
 		for(int x=0; x < dimx; x++)
@@ -64,6 +65,13 @@ public class Terrain {
 				 Color col = new Color(val, val, val, 1.0f);
 				 img.setRGB(x, y, col.getRGB());
 			}
+	}
+
+	//reset the color in a cell
+	void resetPixel (int x, int y){
+		float val = (height[x][y] - minh) / (maxh - minh);
+		Color col = new Color(val, val, val, 1.0f);
+		img.setRGB(x, y, col.getRGB());
 	}
 	
 	// generate a permuted list of linear index positions to allow a random

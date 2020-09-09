@@ -73,7 +73,7 @@ public class Flow {
 				synchronized (landdata.items){
 					for (int i = 0; i < landdata.dimy ; i++) {
 						for (int j = 0; j < landdata.dimx; j++) {
-							landdata.items[i][j].resetWater();
+							landdata.items[j][i].resetWater();
 						}
 					}
 				}
