@@ -15,6 +15,7 @@ public class Flow {
 
 	//array of threads
 	static SimRun[] threads;
+	static boolean paused;
 
 	// start timer
 	private static void tick(){
@@ -74,30 +75,55 @@ public class Flow {
 					for (int i = 0; i < landdata.dimy ; i++) {
 						for (int j = 0; j < landdata.dimx; j++) {
 							landdata.items[j][i].resetWater();
+							landdata.resetPixel(j,i);
 						}
 					}
 				}
-				System.out.println("clicked");
-				fp = new FlowPanel(landdata); // reset the ting
-				fp.setPreferredSize(new Dimension(frameX,frameY)); //not sure why
-				g.remove(fp);
-				g.repaint();
-				g.add(fp);
+
+				//stop all threads
+                for (int i = 0; i < 4; i++) {
+                    threads[i].isRunning = false;
+                }
+
+                //make new threads
+                threads = new SimRun[4];
+
+//				System.out.println("clicked");
+//				fp = new FlowPanel(landdata); // reset the ting
+//				fp.setPreferredSize(new Dimension(frameX,frameY)); //not sure why
+//				g.remove(fp);
+//				g.repaint();
+//				g.add(fp);
+//				g.repaint();
 			}
 		});
 
 		//Pause Button
 		JButton pauseB = new JButton("Pause");
+		pauseB.addActionListener(e ->{
+            //stop all threads
+            for (int i = 0; i < 4; i++) {
+                threads[i].interrupt();
+            }
+            paused = true;
+        });
 
 		//play button
 		JButton playB = new JButton("Play");
 		playB.addActionListener(e -> {
-			for (int i = 1; i <= 4; i++) {
-				int low  = ((i-1)/4)*landdata.permute.size();
-				int high = (i/4)*landdata.permute.size();
-				threads[i-1] = (new SimRun(low,high,landdata));
-				threads[i-1].start();
-			}
+            if(!paused) {
+
+                for (int i = 1; i <= 4; i++) {
+                    int low = ((i - 1) / 4) * landdata.permute.size();
+                    int high = (i / 4) * landdata.permute.size();
+                    threads[i - 1] = (new SimRun(low, high, landdata));
+                    threads[i - 1].start();
+                }
+            }else{
+                for (int i = 0; i < 4; i++) {
+                    threads[i].start();
+                }
+            }
 		});
 
 
@@ -160,10 +186,12 @@ public class Flow {
 		SwingUtilities.invokeLater(()->setupGUI(frameX, frameY, landdata));
 		
 		// to do: initialise and start simulation
-		System.out.println(landdata.permute.size());
+		//System.out.println(landdata.permute.size());
+
 
 		//thread
 		threads = new SimRun[4];
+		paused = false;
 
 	}
 }

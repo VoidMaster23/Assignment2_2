@@ -14,14 +14,14 @@ public class FlowPanel extends JPanel implements Runnable {
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 
-				System.out.println(e);
-				graphics.drawRect(e.getX(),e.getY(),getWidth()/100,getHeight()/100);
-				graphics.setColor(Color.BLUE);
-				System.out.println(graphics.toString());
-				graphics.fillRect(e.getX(),e.getY(),getWidth()/100,getHeight()/100);
-				land.items[e.getX()][e.getY()].addWater(100);
-				System.out.println(land.items[e.getX()][e.getY()].toString());
-
+				//System.out.println(e);
+				//graphics.drawRect(e.getX(),e.getY(),getWidth()/100,getHeight()/100);
+				//graphics.setColor(Color.BLUE);
+				//System.out.println(graphics.toString());
+				//graphics.fillRect(e.getX(),e.getY(),getWidth()/100,getHeight()/100);
+				//land.items[e.getX()][e.getY()].addWater(100);
+				//System.out.println(land.items[e.getX()][e.getY()].toString());
+				fillNeighbors(e.getX(),e.getY());
 
 			}
 		});
@@ -42,8 +42,8 @@ public class FlowPanel extends JPanel implements Runnable {
 		if (land.getImage() != null){
 			g.drawImage(land.getImage(), 0, 0, null);
 			graphics = getGraphics();
-			System.out.println("SET GRAPHICS");
-			System.out.println(graphics.toString());
+			//System.out.println("SET GRAPHICS");
+			//System.out.println(graphics.toString());
 			//graphics.setColor(Color.CYAN);
 
 //			//draw the grid
@@ -54,6 +54,27 @@ public class FlowPanel extends JPanel implements Runnable {
 
 
 	}
+
+	/**
+	 * Fills a 7x7 selection of gridItems with water adn repaints
+	 * @param x column index
+	 * @param y row index
+	 */
+	public void fillNeighbors(int x, int y){
+		for(int i = x-3; i <= x+3; i++){
+			for(int j = y-3; j <= y+3; j++){
+
+				synchronized (land){
+					land.img.setRGB(i,j,Color.BLUE.getRGB());
+					land.items[i][j].addWater(3);
+				}
+
+
+			}
+		}
+		this.repaint();
+	}
+
 	
 	public void run() {	
 		// display loop here

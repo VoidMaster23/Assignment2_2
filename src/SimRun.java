@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Thread class that actually runs operations on the permutations
@@ -16,6 +18,7 @@ public class SimRun extends java.lang.Thread {
     //know if the thread is running or nah
     boolean isRunning;
 
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
      * Constructor for the thread class
@@ -40,6 +43,7 @@ public class SimRun extends java.lang.Thread {
         while (isRunning){
             for (int i = low; i < high; i++) {
                 //get the row and column index
+               // System.out.println(i);
                 int[] arr  = new int[2];
                 landData.getPermute(i, arr);
 
@@ -51,8 +55,8 @@ public class SimRun extends java.lang.Thread {
                 GridItem currentItem = landData.items[x][y];
 
                 if(currentItem.getWaterUnits() != 0) {
-                    System.out.println(x);
-                    System.out.println(y);
+                    //System.out.println(x);
+                   // System.out.println(y);
                     //System.out.println(currentItem);
 
                     //find the lowestNeighbor
@@ -77,9 +81,16 @@ public class SimRun extends java.lang.Thread {
                                     landData.resetPixel(currentItem.getColInd(), currentItem.getRowInd());
                                 }
                                 Flow.fp.repaint();
-                                System.out.println(currentItem.toString());
+                                //System.out.println(currentItem.toString());
                             }
                         }// end sync block
+                    }else if(!inRange(x,y)){
+                        // we are at a boundary
+                        //set the water to 0 and reset pixel
+                        synchronized (currentItem){
+                            currentItem.resetWater();
+                            landData.resetPixel(currentItem.getColInd(),currentItem.getRowInd());
+                        }
                     }
                 }
 
@@ -98,18 +109,24 @@ public class SimRun extends java.lang.Thread {
     public GridItem findLowest(int x, int y, GridItem toCheck){
         GridItem lowest = toCheck;
 
-        //iterate the immediate rows
-        for (int i = y-1; i <= y+1 ; i++) {
+        //make sure we're not at a limit before figuring out where the water goes
+        if(inRange(x,y)){
+            //iterate the immediate rows
+            for (int i = y-1; i <= y+1 ; i++) {
 
-            //iterate the immediate columns
-            for(int j = x-1; j <= x+1; j++){
-                // check if this thing is the lowest
-                if(landData.items[j][i].getWaterSurface() < lowest.getWaterSurface()){
-                    lowest = landData.items[j][i];
+                //iterate the immediate columns
+                for(int j = x-1; j <= x+1; j++){
+                    // check if this thing is the lowest
+                    if(landData.items[j][i].getWaterSurface() < lowest.getWaterSurface()){
+                        lowest = landData.items[j][i];
+                    }
                 }
-            }
 
+            }
         }
+
+
+
 
         //once the lowest has been obtained check if its not the same as toCheck
         if(toCheck.getWaterSurface() == lowest.getWaterSurface()){
@@ -120,5 +137,21 @@ public class SimRun extends java.lang.Thread {
 
         return lowest;
     }
+
+    /**
+     * Method to check if the current grid position is not at a boundary
+     * @param x column index
+     * @param y row index
+     * @return true if not at a boundary and false otherwise
+     */
+    public boolean inRange(int x, int y){
+
+        boolean xinRange = x != 0 && x != landData.dimx-1; // check if we are not at the x boundaries
+        boolean yinRange = y != 0 && y != landData.dimy-1; // check if we are not at the y boundaries
+
+        return xinRange && yinRange; // combine results
+    }
+
+
 
 }
