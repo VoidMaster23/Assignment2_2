@@ -80,6 +80,31 @@ public class FlowPanel extends JPanel implements Runnable {
 		// display loop here
 		// to do: this should be controlled by the GUI
 		// to allow stopping and starting
-	    repaint();
+		while (true){
+			while(!Flow.paused){
+				if(Flow.finishedStep.get(0) == 1 && Flow.finishedStep.get(1) == 1 && Flow.finishedStep.get(2) == 1 && Flow.finishedStep.get(3) == 1 ){
+					synchronized (Flow.finishedStep){
+						for (int i = 0; i < 4; i++) {
+							Flow.finishedStep.set(i,0);
+							//System.out.println("Thread "+i+" "+Flow.threads[i].counter);
+							//System.out.println("Thread "+i+" "+Flow.threads[i].getState().toString());
+						}
+					}
+					Flow.counter.incrementAndGet();
+					Flow.count.setText(Integer.toString(Flow.counter.get()));
+					//System.out.println("Incrementing after "+ind+"\nCounter: "+counter);
+				}
+
+			}
+		}
+
+
+//		try {
+//			this.wait();
+//			this.run();
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
+
 	}
 }

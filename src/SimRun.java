@@ -1,13 +1,10 @@
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Thread class that actually runs operations on the permutations
  * @author Edson Shivuri
  */
-public class SimRun extends java.lang.Thread {
+public class SimRun extends java.lang.Thread{
     //start and end indices
     private int low;
     private int high;
@@ -18,7 +15,11 @@ public class SimRun extends java.lang.Thread {
     //know if the thread is running or nah
     boolean isRunning;
 
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    //counter to keep track of the timing
+    int counter;
+
+
+    int index;
 
     /**
      * Constructor for the thread class
@@ -26,11 +27,14 @@ public class SimRun extends java.lang.Thread {
      * @param high upper index visible to the thread
      * @param landData terrain to analyse
      */
-    public SimRun(int low, int high, Terrain landData){
+    public SimRun(int low, int high, Terrain landData,int index){
         this.low = low;
         this.high = high;
         this.landData = landData;
         isRunning = true;
+        this.counter = 0;
+        this.index = index;
+
     }
 
     /**
@@ -41,58 +45,75 @@ public class SimRun extends java.lang.Thread {
 
         // execute until the user says stop
         while (isRunning){
-            for (int i = low; i < high; i++) {
-                //get the row and column index
-               // System.out.println(i);
-                int[] arr  = new int[2];
-                landData.getPermute(i, arr);
+            //check to see if the counter has been incremented
+            if(this.counter == Flow.counter.get()){
 
-                //get the gridItem in question
-                int x = arr[0];
-                int y = arr[1];
+                    //iterate over certain portion of the grid
+                   for (int i = low; i < high; i++) {
 
-                //note that we have  to address y as the row and x and column
-                GridItem currentItem = landData.items[x][y];
+                       //get the row and column index
+                       int[] arr  = new int[2];
+                       landData.getPermute(i, arr);
 
-                if(currentItem.getWaterUnits() != 0) {
-                    //System.out.println(x);
-                   // System.out.println(y);
-                    //System.out.println(currentItem);
+                       //get the gridItem in question
+                       int x = arr[0];
+                       int y = arr[1];
 
-                    //find the lowestNeighbor
-                    GridItem lowestNeighbor = findLowest(x, y, currentItem);
-                    //System.out.println(lowestNeighbor);
-                    //System.exit(0);
-                    //transfer units from the current item to the lowest neighbor\
-                    // note this operation needs to be thread safe hence the synchronized block
-                    // note we only do this if there wa a lowest neighbor
-                    if (lowestNeighbor != null) {
-                        synchronized (currentItem) {
-                            synchronized (lowestNeighbor) {
-                                //take a water unit from this one and add i
-                                //System.out.println(currentItem.toString());
-                                currentItem.removeWater(1);
-                                lowestNeighbor.addWater(1);
-                             //   landData.img.setRGB(currentItem.getColInd(),currentItem.getRowInd(), Color.BLUE.getRGB());
-                                landData.img.setRGB(lowestNeighbor.getColInd(),lowestNeighbor.getRowInd(), Color.BLUE.getRGB());
+                       //note that we have  to address y as the row and x and column
+                       GridItem currentItem = landData.items[x][y];
 
-                                //System.exit(0);
-                                if (currentItem.getWaterUnits() == 0) {
-                                    landData.resetPixel(currentItem.getColInd(), currentItem.getRowInd());
-                                }
-                                Flow.fp.repaint();
-                                //System.out.println(currentItem.toString());
-                            }
-                        }// end sync block
-                    }else if(!inRange(x,y)){
-                        // we are at a boundary
-                        //set the water to 0 and reset pixel
-                        synchronized (currentItem){
-                            currentItem.resetWater();
-                            landData.resetPixel(currentItem.getColInd(),currentItem.getRowInd());
-                        }
-                    }
-                }
+                       //only execute if we have a non-zero water level
+                       if(currentItem.getWaterUnits() > 0) {
+
+
+                           //find the lowestNeighbor
+                           GridItem lowestNeighbor = findLowest(x, y, currentItem);
+
+                           //transfer units from the current item to the lowest neighbor\
+                           // note this operation needs to be thread safe hence the synchronized block
+                           // note we only do this if there wa a lowest neighbor
+                           if (lowestNeighbor != null) {
+
+                               //place a lock on the current item and the lowest neighbor
+                               //this ensures thread safety during the operations we perform
+                               synchronized (currentItem) {
+                                   synchronized (lowestNeighbor) {
+                                       //take a water unit from this one and add it to the lowest neighbor
+                                       currentItem.removeWater(1);
+                                       lowestNeighbor.addWater(1);
+
+                                       //change the color of the lowest  neigbor pixel to blue
+                                       landData.img.setRGB(lowestNeighbor.getColInd(),lowestNeighbor.getRowInd(), Color.BLUE.getRGB());
+
+                                       //reset the color of the current pixel of theres no water on it
+                                       if (currentItem.getWaterUnits() == 0) {
+                                           landData.resetPixel(currentItem.getColInd(), currentItem.getRowInd());
+                                       }
+
+                                       //repaint the panel
+                                       Flow.fp.repaint();
+
+                                   }
+                               }// end sync block
+                           }else if(!inRange(x,y)){
+
+                               // we are at a boundary
+                               //set the water to 0 and reset pixel
+                               synchronized (currentItem){
+                                   currentItem.resetWater();
+                                   landData.resetPixel(currentItem.getColInd(),currentItem.getRowInd());
+                               }
+                           }
+                       }
+
+                   }
+
+                   //increment the counter of the current thread
+                   this.counter++;
+
+                   //tell flow that we have finished the step
+                   Flow.finishedStep.set(index,1);
+
 
             }
         }

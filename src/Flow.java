@@ -5,6 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class Flow {
 	static long startTime = 0;
@@ -12,10 +17,22 @@ public class Flow {
 	static int frameY;
 	static FlowPanel fp;
 	static JPanel g;
+	static  JLabel count;
 
 	//array of threads
 	static SimRun[] threads;
 	static boolean paused;
+
+	//keep track of which threads finished step
+	static AtomicIntegerArray finishedStep;
+
+	//counter
+	static AtomicInteger counter;
+
+	//
+	static Thread fpt;
+
+
 
 	// start timer
 	private static void tick(){
@@ -66,6 +83,9 @@ public class Flow {
 		resetB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//halt execution
+				paused = true;
+
 
 				// reset the water value for each gridItem , make sure no other thread can do operations there
 				// note this may be a problem  if you try to reset during run
@@ -83,89 +103,97 @@ public class Flow {
 				//stop all threads
                 for (int i = 0; i < 4; i++) {
                     threads[i].isRunning = false;
+                    finishedStep.set(i,0);
                 }
+
+                fp.repaint();
 
                 //make new threads
                 threads = new SimRun[4];
 
-//				System.out.println("clicked");
-//				fp = new FlowPanel(landdata); // reset the ting
-//				fp.setPreferredSize(new Dimension(frameX,frameY)); //not sure why
-//				g.remove(fp);
-//				g.repaint();
-//				g.add(fp);
-//				g.repaint();
+                //reset the counter
+				synchronized (counter){
+					counter.set(0);
+					count.setText(Integer.toString(counter.get()));
+				}
+
+				paused = false;
 			}
 		});
 
 		//Pause Button
 		JButton pauseB = new JButton("Pause");
 		pauseB.addActionListener(e ->{
-            //stop all threads
-            for (int i = 0; i < 4; i++) {
-                threads[i].interrupt();
-            }
+           //let all threads finish their current step then pause
             paused = true;
-        });
+
+		});
 
 		//play button
 		JButton playB = new JButton("Play");
 		playB.addActionListener(e -> {
-            if(!paused) {
 
-                for (int i = 1; i <= 4; i++) {
-                    int low = ((i - 1) / 4) * landdata.permute.size();
-                    int high = (i / 4) * landdata.permute.size();
-                    threads[i - 1] = (new SimRun(low, high, landdata));
-                    threads[i - 1].start();
-                }
-            }else{
-                for (int i = 0; i < 4; i++) {
-                    threads[i].start();
-                }
-            }
+            if(!paused) {
+//				counter.set(0);
+            	//if we're doing a clean start
+				synchronized (threads){
+					for (int i = 1; i <= 4; i++) {
+						int low = (int)((((double)i - 1) / 4.0) * landdata.permute.size());
+						int high = (int)(((double)i / 4.0) * landdata.permute.size());
+						threads[i - 1] = (new SimRun(low, high, landdata,i-1));
+						//finishedStep[i-1].set(false);
+						threads[i - 1].start();
+					}
+				}
+
+
+			}else{
+            	//continue execution
+               paused = false;
+
+			}
+
 		});
 
 
 		JButton endB = new JButton("End");;
 		// add the listener to the jbutton to handle the "pressed" event
 		endB.addActionListener(e -> {
+			//pause the run
+			paused = true;
+
 			//threads to stop
 			for (int i = 0; i < 4; i++) {
 				threads[i].isRunning = false;
 			}
-			frame.dispose();
+			//stop the program
+			System.exit(0);
 		});
+
+		//Display the current step
+		JLabel step = new JLabel("Step ");
+		count  = new JLabel(Integer.toString(counter.get()));
 
 		//add the buttons
 		b.add(resetB);
 		b.add(pauseB);
 		b.add(playB);
 		b.add(endB);
+		b.add(step);
+		b.add(count);
+
 		g.add(b);
 
-//		fp.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                super.mouseClicked(e);
-//                fp.graphics.drawRect(e.getX(),e.getY(),fp.getWidth()/100,fp.getHeight()/100);
-//                fp.graphics.setColor(Color.BLUE);
-//                System.out.println(fp.graphics.toString());
-//                fp.graphics.fillRect(e.getX(),e.getY(),fp.getWidth()/100,fp.getHeight()/100);
-//                fp.land.items[e.getX()][e.getY()].addWater(100);
-//                System.out.println(fp.land.items[e.getX()][e.getY()].toString());
-//            }
-//        });
     	
 		frame.setSize(frameX, frameY+50);	// a little extra space at the bottom for buttons
       	frame.setLocationRelativeTo(null);  // center window on screen
       	frame.add(g); //add contents to window
         frame.setContentPane(g);
         frame.setVisible(true);
-        Thread fpt = new Thread(fp);
+        fpt = new Thread(fp);
         fpt.start();
 	}
-	
+
 		
 	public static void main(String[] args) {
 		Terrain landdata = new Terrain();
@@ -186,11 +214,21 @@ public class Flow {
 		SwingUtilities.invokeLater(()->setupGUI(frameX, frameY, landdata));
 		
 		// to do: initialise and start simulation
-		//System.out.println(landdata.permute.size());
 
 
-		//thread
+
+		//create the threads array
 		threads = new SimRun[4];
+
+		//store each step results
+		finishedStep = new AtomicIntegerArray(4);
+
+		//initialise the steps to -
+		for (int i = 0; i < 4; i++) {
+			finishedStep.set(i,0);
+		}
+
+		counter = new AtomicInteger(0);
 		paused = false;
 
 	}
