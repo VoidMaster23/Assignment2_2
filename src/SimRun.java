@@ -26,6 +26,7 @@ public class SimRun extends java.lang.Thread{
      * @param low lower index that is visible to the thread
      * @param high upper index visible to the thread
      * @param landData terrain to analyse
+     * @param index index the thread has access to in the finishedStep array of FP
      */
     public SimRun(int low, int high, Terrain landData,int index){
         this.low = low;
