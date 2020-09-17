@@ -21,7 +21,7 @@ public class Flow {
 
 	//array of threads
 	static SimRun[] threads;
-	static boolean paused;
+	static volatile boolean paused;
 
 	//keep track of which threads finished step
 	static AtomicIntegerArray finishedStep;
