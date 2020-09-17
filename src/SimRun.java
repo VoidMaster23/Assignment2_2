@@ -83,12 +83,22 @@ public class SimRun extends java.lang.Thread{
                                        currentItem.removeWater(1);
                                        lowestNeighbor.addWater(1);
 
-                                       //change the color of the lowest  neigbor pixel to blue
-                                       landData.img.setRGB(lowestNeighbor.getColInd(),lowestNeighbor.getRowInd(), Color.BLUE.getRGB());
+                                       //change the color of the lowest  neigbor pixel to a shade of blue
+                                       float val = (lowestNeighbor.getWaterSurface() - landData.minh) / (landData.maxh - landData.minh);
+                                       Color col = new Color(0, 0, val, 1.0f);
+                                       landData.img.setRGB(lowestNeighbor.getColInd(),lowestNeighbor.getRowInd(), col.getRGB());
+
+
+
 
                                        //reset the color of the current pixel of theres no water on it
                                        if (currentItem.getWaterUnits() == 0) {
                                            landData.resetPixel(currentItem.getColInd(), currentItem.getRowInd());
+                                       }else{
+                                           //reshade the current pixel
+                                           val = (currentItem.getWaterSurface() - landData.minh) / (landData.maxh - landData.minh);
+                                           col = new Color(0, val, val, 1.0f);// this aqua color indicates shallow water
+                                           landData.img.setRGB(currentItem.getColInd(),currentItem.getRowInd(), col.getRGB());
                                        }
 
                                        //repaint the panel
