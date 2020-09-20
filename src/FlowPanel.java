@@ -13,14 +13,6 @@ public class FlowPanel extends JPanel implements Runnable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-
-				//System.out.println(e);
-				//graphics.drawRect(e.getX(),e.getY(),getWidth()/100,getHeight()/100);
-				//graphics.setColor(Color.BLUE);
-				//System.out.println(graphics.toString());
-				//graphics.fillRect(e.getX(),e.getY(),getWidth()/100,getHeight()/100);
-				//land.items[e.getX()][e.getY()].addWater(100);
-				//System.out.println(land.items[e.getX()][e.getY()].toString());
 				fillNeighbors(e.getX(),e.getY());
 
 			}
@@ -42,11 +34,7 @@ public class FlowPanel extends JPanel implements Runnable {
 		if (land.getImage() != null){
 			g.drawImage(land.getImage(), 0, 0, null);
 			graphics = getGraphics();
-			//System.out.println("SET GRAPHICS");
-			//System.out.println(graphics.toString());
-			//graphics.setColor(Color.CYAN);
 
-//			//draw the grid
 //
 
 		}
@@ -75,7 +63,9 @@ public class FlowPanel extends JPanel implements Runnable {
 		this.repaint();
 	}
 
-	
+	/**
+	 * Run method for flow panel. This is responsible fro making sure that every thread has looped through each portion of the permute the same amount of times as the other threads,
+ 	 */
 	public void run() {	
 		// display loop here
 		// to do: this should be controlled by the GUI
@@ -86,25 +76,14 @@ public class FlowPanel extends JPanel implements Runnable {
 					synchronized (Flow.finishedStep){
 						for (int i = 0; i < 4; i++) {
 							Flow.finishedStep.set(i,0);
-							//System.out.println("Thread "+i+" "+Flow.threads[i].counter);
-							//System.out.println("Thread "+i+" "+Flow.threads[i].getState().toString());
 						}
 					}
 					Flow.counter.incrementAndGet();
 					Flow.count.setText(Integer.toString(Flow.counter.get()));
-					//System.out.println("Incrementing after "+ind+"\nCounter: "+counter);
+
 				}
 
 			}
 		}
-
-
-//		try {
-//			this.wait();
-//			this.run();
-//		}catch (Exception e){
-//			e.printStackTrace();
-//		}
-
 	}
 }

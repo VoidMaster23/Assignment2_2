@@ -34,16 +34,7 @@ public class Flow {
 
 
 
-	// start timer
-	private static void tick(){
-		startTime = System.currentTimeMillis();
-	}
-	
-	// stop timer, return time elapsed in seconds
-	private static float tock(){
-		return (System.currentTimeMillis() - startTime) / 1000.0f; 
-	}
-	
+
 	public static void setupGUI(int frameX,int frameY,Terrain landdata) {
 		
 		Dimension fsize = new Dimension(800, 800);
@@ -80,7 +71,13 @@ public class Flow {
 
 	    //Reset Button
 		JButton resetB = new JButton("Reset");
+
 		resetB.addActionListener(new ActionListener() {
+			/**
+			 * Action listener for the reset button. Thus button clears the terrin of any water, sets the counter to 0 and  creates new threads
+ 			 * @param e
+			 */
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//halt execution
