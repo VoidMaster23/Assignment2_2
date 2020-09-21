@@ -6,6 +6,11 @@ import javax.swing.JPanel;
 public class FlowPanel extends JPanel implements Runnable {
 	Terrain land;
 	Graphics graphics;
+
+	/**
+	 * Constructor for the class. it also attaches the mouse listener to the flow panel
+	 * @param terrain the terrain that needs to be represented
+	 */
 	FlowPanel(Terrain terrain) {
 
 		land=terrain;

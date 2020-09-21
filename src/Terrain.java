@@ -67,7 +67,11 @@ public class Terrain {
 			}
 	}
 
-	//reset the color in a cell
+	/**
+	 * Method ro reset the pixel value in a specif location
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 */
 	void resetPixel (int x, int y){
 		float val = (height[x][y] - minh) / (maxh - minh);
 		Color col = new Color(val, val, val, 1.0f);
