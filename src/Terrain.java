@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Locale;
 
 public class Terrain {
 
@@ -96,8 +97,8 @@ public class Terrain {
 	// read in terrain from file
 	void readData(String fileName){ 
 		try{ 
-			Scanner sc = new Scanner(new File("../res/"+fileName));
-			
+			Scanner sc = new Scanner(new File("res/"+fileName));
+			sc.useLocale(Locale.US);
 			// read grid dimensions
 			// x and y correpond to columns and rows, respectively.
 			// Using image coordinate system where top left is (0, 0).
