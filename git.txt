@@ -1,0 +1,77 @@
+commit fa58367344f01fc6c706b6ec07c98ce954907bfb
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 21 21:35:19 2020 +0200
+
+    Makefile works
+
+commit cb776852c1b66d9fea6d495802a51c978637a0ef
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 21 21:03:07 2020 +0200
+
+    Makefile Added
+
+commit 2e463afba4aa64c255ca31aeefec6a180d350bb4
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 21 00:14:24 2020 +0200
+
+    Made color changing
+
+commit 8ec252bdc4b0be4a3a6ee0782760be95dc1bd7eb
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Thu Sep 17 20:12:44 2020 +0200
+
+    Made color changing
+
+commit 277c965d5fde01536390e1a15baf2a167a0ee1ff
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Thu Sep 17 12:41:42 2020 +0200
+
+    Made color changing
+
+commit e00d8861b4bae2ba7c03137302cbccd4ef89b0da
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 14 19:10:14 2020 +0200
+
+    Added Docs
+
+commit 5dd2289bf6d735f03448855a3b08cf6a01b3ad9c
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 14 18:54:33 2020 +0200
+
+    HAHA MY SHIT WORKSSSSSSSSSSSSSSS
+
+commit a6f0d090692597eeaf6a84bce711d9c63831b7a4
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Sat Sep 12 18:05:43 2020 +0200
+
+    Home Stretch now, Need to clean up code, make sure things can be paused and also fix reset bug
+
+commit 92aafe2f26c5a7a316e56bf84d391d36584ca5a3
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Wed Sep 9 20:37:13 2020 +0200
+
+    Shit shows now, work on performance, timing and pause
+
+commit b622af9acde5e5adbe2641cacf35c764a612bdaa
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Tue Sep 8 20:32:58 2020 +0200
+
+    Sim Can Run, needs testing and must show water move
+
+commit f0d19a5dd00b9f0811a9bb5a25016a06f6a0e3ac
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 7 23:12:27 2020 +0200
+
+    Water Blocks Show Up now, need to handle Sim
+
+commit 662e5957d8b74bb275101671f7164c278f532a28
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 7 16:11:45 2020 +0200
+
+    GridItems generated
+
+commit d5beec2f677cac53b1a168eb045171c75c9c368c
+Author: VoidMaster23 <edsonshivuri@gmail.com>
+Date:   Mon Sep 7 15:59:18 2020 +0200
+
+    GridItem Class Done, Needs Integration

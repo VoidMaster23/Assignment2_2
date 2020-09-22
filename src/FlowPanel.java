@@ -60,11 +60,13 @@ public class FlowPanel extends JPanel implements Runnable {
 				synchronized (land){
 					land.img.setRGB(i,j,Color.BLUE.getRGB());
 					land.items[i][j].addWater(3);
+					//Flow.waterIn.addAndGet(3);
 				}
 
 
 			}
 		}
+		//System.out.println("Water In: "+Flow.waterIn.get()+"\t Water out: "+Flow.waterOut.get());
 		this.repaint();
 	}
 

@@ -29,6 +29,10 @@ public class Flow {
     //counter
     static AtomicInteger counter;
 
+    //keep track of water
+    static AtomicInteger waterIn;
+    static AtomicInteger waterOut;
+
     //
     static Thread fpt;
 
@@ -152,9 +156,9 @@ public class Flow {
             paused = true;
 
             //threads to stop
-            for (int i = 0; i < 4; i++) {
-                threads[i].isRunning = false;
-            }
+            // for (int i = 0; i < 4; i++) {
+            //     threads[i].isRunning = false;
+            // }
             //stop the program
             System.exit(0);
         });
@@ -216,6 +220,8 @@ public class Flow {
         }
 
         counter = new AtomicInteger(0);
+       // waterIn = new AtomicInteger(0);
+       // waterOut = new AtomicInteger(0);
         paused = false;
 
     }

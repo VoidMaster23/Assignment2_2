@@ -111,7 +111,10 @@ public class SimRun extends java.lang.Thread{
                                // we are at a boundary
                                //set the water to 0 and reset pixel
                                synchronized (currentItem){
+                                   //Flow.waterOut.addAndGet(currentItem.getWaterUnits());
+                                   //Flow.waterIn.addAndGet(-1*currentItem.getWaterUnits());
                                    currentItem.resetWater();
+                                   //System.out.println("Water In: "+Flow.waterIn.get()+"\t Water out: "+Flow.waterOut.get());
                                    landData.resetPixel(currentItem.getColInd(),currentItem.getRowInd());
                                }
                            }
